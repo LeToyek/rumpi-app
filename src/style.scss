@@ -5,3 +5,18 @@
   padding: 0px;
   margin: 0px;
 }
+.App{
+  min-height: 100vh;
+  .login-page{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    form{
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+

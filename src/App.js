@@ -1,12 +1,13 @@
 import React from "react";
+import { AppContextProvider } from "./context/AppContext";
 import LoginPage from "./pages/LoginPage";
-import './style.scss'
-require('dotenv').config();
+import "./style.scss";
 function App() {
-  console.log(process.env)
   return (
     <div className="App">
-      <LoginPage/>
+      <AppContextProvider>
+        <LoginPage />
+      </AppContextProvider>
     </div>
   );
 }
