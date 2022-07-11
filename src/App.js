@@ -1,9 +1,12 @@
 import React from "react";
+import LoginPage from "./pages/LoginPage";
 import './style.scss'
+require('dotenv').config();
 function App() {
+  console.log(process.env)
   return (
     <div className="App">
-      <h1></h1>
+      <LoginPage/>
     </div>
   );
 }
