@@ -89,23 +89,34 @@ button {
         overflow: auto;
         width: 60%;
         height: 80%;
-        background-color: #2B2B2B;
-        .chat-user{
-          text-transform: capitalize;
+        background-color: #2b2b2b;
+        .group-card {
+          .chat-user {
+            text-transform: capitalize;
             font-weight: 600;
             font-size: 14px;
-            span{
+            span {
               margin-left: 8px;
               font-size: 12px;
               font-weight: 300;
             }
+          }
+          .chat-card {
+            background-color: #404347;
+            max-width: 60%;
+            border-radius: 0px 10px 10px 10px;
+            padding: 8px 16px;
+            margin-bottom: 16px;
+          }
         }
-        .chat-card{
-          background-color: #3F3351;
-          max-width: 60%;
-          border-radius: 8px 8px 8px 0;
-          padding: 8px 16px;
-          margin-bottom: 16px;
+        .group-card.user{
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          .chat-card{
+            background-color: #bb86fc;
+            border-radius: 10px 0px 10px 10px;
+          }
         }
       }
       .group-form {
@@ -116,7 +127,7 @@ button {
           width: 100%;
           margin-bottom: 0px;
         }
-        button{
+        button {
           padding: 8px 8px;
           border-radius: 32px;
           display: flex;
