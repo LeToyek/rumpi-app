@@ -1,10 +1,10 @@
 import React from 'react'
-import LoginForm from '../components/LoginForm'
+import AuthForm from '../components/AuthForm'
 
 const LoginPage = () => {
   return (
     <div className='login-page'>
-      <LoginForm/>
+      <AuthForm isLogin={false}/>
     </div>
   )
 }
