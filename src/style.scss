@@ -30,10 +30,11 @@ button {
   border: none;
   font-weight: bold;
 }
-.group-form{
-  border-radius: 12px;
+.group-form {
+  border-radius: 8px;
   overflow: hidden;
   margin-bottom: 8px;
+  display: flex;
 }
 .text-link {
   color: #bb86fc;
@@ -54,24 +55,72 @@ button {
     form {
       display: flex;
       flex-direction: column;
-      .text-wrong{
-
+      .text-wrong {
         color: red;
       }
       .group-form {
         display: flex;
         background-color: #2c2f33;
         align-items: center;
-        input{
+        input {
           margin-bottom: 0px;
           border-radius: 0px;
         }
-        button{
+        button {
           display: flex;
           align-items: center;
           padding: 0px;
           background-color: transparent;
           margin-right: 12px;
+        }
+      }
+    }
+  }
+  .chat-page {
+    height: 100vh;
+    .chat-field {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .chat-container {
+        padding: 16px;
+        overflow: auto;
+        width: 60%;
+        height: 80%;
+        background-color: #2B2B2B;
+        .chat-user{
+          text-transform: capitalize;
+            font-weight: 600;
+            font-size: 14px;
+            span{
+              margin-left: 8px;
+              font-size: 12px;
+              font-weight: 300;
+            }
+        }
+        .chat-card{
+          background-color: #3F3351;
+          max-width: 60%;
+          border-radius: 8px 8px 8px 0;
+          padding: 8px 16px;
+          margin-bottom: 16px;
+        }
+      }
+      .group-form {
+        background-color: #2c2f33;
+        border-radius: 0px;
+        width: 60%;
+        input {
+          width: 100%;
+          margin-bottom: 0px;
+        }
+        button{
+          padding: 8px 8px;
+          border-radius: 32px;
+          display: flex;
+          align-items: center;
         }
       }
     }

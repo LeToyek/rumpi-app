@@ -1,9 +1,10 @@
 import React from 'react'
+import ChatField from '../components/ChatField'
 
 const ChatPage = () => {
   return (
-    <div>
-      Welcome to Chatpage
+    <div className='chat-page'>
+      <ChatField/>
     </div>
   )
 }
