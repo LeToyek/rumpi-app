@@ -8,7 +8,7 @@ const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [userID, setUserID] = useState(null);
-  const [isUser, setIsUser] = useState(false);
+  
   const [isWrong, setIsWrong] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState(null);
@@ -29,9 +29,7 @@ const AppContextProvider = ({ children }) => {
       if (data.body[0].Password === Password) {
         setIsWrong(false);
         setUserID(data.body[0].id);
-        userID && console.log(userID);
-        userID && localStorage.setItem("user_id", userID);
-        console.log("->>>" + isWrong);
+        !!userID && localStorage.setItem("user_id", userID);
         console.log("login success");
         history.push("/chat");
       } else {
@@ -45,9 +43,8 @@ const AppContextProvider = ({ children }) => {
     try {
       let data = await supabase
         .from("messages")
-        .select(`created_at,text,user_id,users(Username)`);
-      await setDataMessages(data.body);
-      await console.log(dataMessages);
+        .select(`*,users(Username)`);
+      setDataMessages(data.body);
     } catch (error) {
       throw new Error(error);
     }
@@ -85,7 +82,6 @@ const AppContextProvider = ({ children }) => {
         isWrong,
         sendMessage,
         dataMessages,
-        isUser,
         getMessages,
       }}
     >
