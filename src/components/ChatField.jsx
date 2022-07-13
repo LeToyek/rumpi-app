@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { useAppContext } from "../context/AppContext";
 
 const ChatField = () => {
-  const {sendMessage} = useAppContext()
+  const {sendMessage,getMessages,dataMessages} = useAppContext()
   const [text,setText] = useState("")
+  
+  useEffect(() => {
+    console.log("matamuu")
+    getMessages()
+  }, []);
+  useEffect(() => {
+    dataMessages && dataMessages.map(d => d.text)
+  },[dataMessages])
   return (
     <div className="chat-field">
       <div className="chat-container">

@@ -7,7 +7,8 @@ const AppContext = createContext({});
 const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
-  const [userID,setUserID] = useState(null)
+  const [userID, setUserID] = useState(null);
+  const [isUser, setIsUser] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState(null);
@@ -19,16 +20,18 @@ const AppContextProvider = ({ children }) => {
   const postUserAccount = async () => {
     await supabase.from("users").insert([{ Username, Password }]).single();
   };
-
   const getUserAccount = async () => {
     try {
       let data = await supabase
         .from("users")
         .select(`id,Password`)
         .eq("Username", Username);
-      await setUserID(data.body[0].id)  
       if (data.body[0].Password === Password) {
         setIsWrong(false);
+        setUserID(data.body[0].id);
+        userID && console.log(userID);
+        userID && localStorage.setItem("user_id", userID);
+        console.log("->>>" + isWrong);
         console.log("login success");
         history.push("/chat");
       } else {
@@ -42,8 +45,9 @@ const AppContextProvider = ({ children }) => {
     try {
       let data = await supabase
         .from("messages")
-        .select(`created_at,time,users(Username)`);
-      setDataMessages(data);
+        .select(`created_at,text,user_id,users(Username)`);
+      await setDataMessages(data.body);
+      await console.log(dataMessages);
     } catch (error) {
       throw new Error(error);
     }
@@ -53,16 +57,14 @@ const AppContextProvider = ({ children }) => {
     try {
       await supabase
         .from("messages")
-        .insert([{ text: message, user_id: userID }])
+        .insert([{ text: message, user_id: localStorage.getItem("user_id") }])
         .single();
     } catch (error) {
       throw new Error(error);
     }
   };
-  useEffect(()=>{
-    console.log("matamu");
-  })
-  const onHandleLogin = (e) => {
+  
+  const onHandleLogin = async (e) => {
     e.preventDefault();
     getUserAccount();
   };
@@ -82,7 +84,9 @@ const AppContextProvider = ({ children }) => {
         onHandleRegister,
         isWrong,
         sendMessage,
-        dataMessages
+        dataMessages,
+        isUser,
+        getMessages,
       }}
     >
       {children}
