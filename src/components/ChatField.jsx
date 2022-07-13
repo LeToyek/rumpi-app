@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { useAppContext } from "../context/AppContext";
 
 const ChatField = () => {
-  const { sendMessage, getMessages, dataMessages } = useAppContext();
+  const { sendMessage, getMessages, dataMessages, getRealTimeMessages } =
+    useAppContext();
   const [text, setText] = useState("");
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(()=>{scrollToBottom() 
+    console.log(messagesEndRef)}, [dataMessages]);
 
   useEffect(() => {
-    console.log("matamuu");
     getMessages();
+    getRealTimeMessages();
   }, []);
   return (
     <div className="chat-field">
       <div className="chat-container">
-        {!!dataMessages &&
+        {dataMessages &&
           dataMessages.map((d) => {
-            
             if (d.user_id === localStorage.getItem("user_id")) {
-              return <ChatCard key={d.id} isUser={true} {...d}/>
+              return <ChatCard key={d.id} isUser={true} {...d} />;
             }
-            
-            return <ChatCard key={d.id} isUser={false} {...d}/>
+
+            return <ChatCard key={d.id} isUser={false} {...d} />;
           })}
       </div>
       <div className="group-form">
@@ -29,16 +35,22 @@ const ChatField = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <button onClick={() => sendMessage(text)}>
+        <button
+          onClick={() => {
+            if (text.trim().length !== 0) {
+              sendMessage(text);
+            }
+          }}
+        >
           <SendIcon />
         </button>
       </div>
     </div>
   );
 };
-const ChatCard = ({ isUser, text, time,users }) => {
-  let username 
-  if (users) username = users.Username
+const ChatCard = ({ isUser, text, time, users }) => {
+  let username;
+  if (users) username = users.Username;
   return (
     <>
       {isUser ? (

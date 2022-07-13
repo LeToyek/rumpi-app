@@ -5,10 +5,11 @@ import { useHistory } from "react-router-dom";
 const AppContext = createContext({});
 
 const AppContextProvider = ({ children }) => {
+  let subscription;
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [userID, setUserID] = useState(null);
-  
+
   const [isWrong, setIsWrong] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState(null);
@@ -26,12 +27,11 @@ const AppContextProvider = ({ children }) => {
         .from("users")
         .select(`id,Password`)
         .eq("Username", Username);
+      setIsLoading(true);
       if (data.body[0].Password === Password) {
+        setIsLoading(false);
         setIsWrong(false);
         setUserID(data.body[0].id);
-        !!userID && localStorage.setItem("user_id", userID);
-        console.log("login success");
-        history.push("/chat");
       } else {
         setIsWrong(true);
       }
@@ -39,17 +39,31 @@ const AppContextProvider = ({ children }) => {
       throw new Error(error);
     }
   };
+  useEffect(() => {
+    if (userID) {
+      localStorage.setItem("user_id", userID);
+      history.push("/chat");
+    }
+  }, [userID]);
   const getMessages = async () => {
     try {
-      let data = await supabase
-        .from("messages")
-        .select(`*,users(Username)`);
+      let data = await supabase.from("messages").select(`*,users(Username)`);
       setDataMessages(data.body);
     } catch (error) {
       throw new Error(error);
     }
   };
-
+  const getRealTimeMessages = async () => {
+    subscription = supabase
+      .from("messages")
+      .on("INSERT", (payload) =>
+        setDataMessages((current) => [...current, payload.new])
+      )
+      .subscribe();
+    return () => {
+      supabase.removeSubscription(subscription);
+    };
+  };
   const sendMessage = async (message) => {
     try {
       await supabase
@@ -60,7 +74,7 @@ const AppContextProvider = ({ children }) => {
       throw new Error(error);
     }
   };
-  
+
   const onHandleLogin = async (e) => {
     e.preventDefault();
     getUserAccount();
@@ -83,6 +97,7 @@ const AppContextProvider = ({ children }) => {
         sendMessage,
         dataMessages,
         getMessages,
+        getRealTimeMessages,
       }}
     >
       {children}
