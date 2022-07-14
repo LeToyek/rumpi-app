@@ -10,13 +10,15 @@ const ChatField = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  useEffect(()=>{scrollToBottom() 
-    console.log(messagesEndRef)}, [dataMessages]);
+  useEffect(()=>{scrollToBottom() }, [dataMessages]);
 
   useEffect(() => {
     getMessages();
-    getRealTimeMessages();
+    
   }, []);
+  useEffect(()=>{
+    getRealTimeMessages();
+  },[])
   return (
     <div className="chat-field">
       <div className="chat-container">
@@ -28,6 +30,7 @@ const ChatField = () => {
 
             return <ChatCard key={d.id} isUser={false} {...d} />;
           })}
+          <div ref={messagesEndRef}/>
       </div>
       <div className="group-form">
         <input
@@ -39,6 +42,7 @@ const ChatField = () => {
           onClick={() => {
             if (text.trim().length !== 0) {
               sendMessage(text);
+
             }
           }}
         >

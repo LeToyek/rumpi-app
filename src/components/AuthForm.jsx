@@ -29,7 +29,7 @@ const AuthForm = ({ isLogin }) => {
       <label>Password</label>
       <div className="group-form">
         <input
-          type= {isVisible? "text" : "passowrd"}
+          type= {isVisible? "text" : "password"}
           value={Password}
           placeholder= "password"
           onChange={(e) => setPassword(e.target.value)}

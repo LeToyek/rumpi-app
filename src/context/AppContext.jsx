@@ -9,6 +9,7 @@ const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [userID, setUserID] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false)
 
   const [isWrong, setIsWrong] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +46,9 @@ const AppContextProvider = ({ children }) => {
       history.push("/chat");
     }
   }, [userID]);
+  const openPopUp = () => {
+    setIsOpenModal(true)
+  }
   const getMessages = async () => {
     try {
       let data = await supabase.from("messages").select(`*,users(Username)`);
@@ -98,6 +102,8 @@ const AppContextProvider = ({ children }) => {
         dataMessages,
         getMessages,
         getRealTimeMessages,
+        openPopUp,
+        isOpenModal
       }}
     >
       {children}
