@@ -133,6 +133,9 @@ button {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      img{
+        width: 500px;
+      }
       .chat-container {
         padding: 16px;
         overflow: auto;

@@ -10,8 +10,10 @@ const AppContextProvider = ({ children }) => {
   const [Password, setPassword] = useState("");
   const [userID, setUserID] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false)
-
   const [isWrong, setIsWrong] = useState(false);
+  const [chatRoomID,setChatRoomID] = useState("")
+  const [rooms,setRooms] = useState([])
+  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState(null);
   const history = useHistory();
@@ -37,21 +39,33 @@ const AppContextProvider = ({ children }) => {
         setIsWrong(true);
       }
     } catch (error) {
-      throw new Error(error);
+      setError(error)
     }
   };
+  const getRoomData = async () => {
+    try {
+      const data = await supabase.from("rooms").select('*')
+      setRooms(data.body)
+    } catch (error) {
+      setError(error)
+    }
+  }
+  const createRoom = async (name) => {
+    try {
+      await supabase.from("rooms").insert([{name,user_id: localStorage.getItem("user_id")}])
+    } catch (error) {
+      setError(error)
+    }
+  }
   useEffect(() => {
     if (userID) {
       localStorage.setItem("user_id", userID);
       history.push("/chat");
     }
   }, [userID]);
-  const openPopUp = () => {
-    setIsOpenModal(true)
-  }
-  const getMessages = async () => {
+  const getMessages = async (roomID) => {
     try {
-      let data = await supabase.from("messages").select(`*,users(Username)`);
+      let data = await supabase.from("messages").select(`*,users(Username)`).eq("room_id",roomID);
       setDataMessages(data.body);
     } catch (error) {
       throw new Error(error);
@@ -78,7 +92,6 @@ const AppContextProvider = ({ children }) => {
       throw new Error(error);
     }
   };
-
   const onHandleLogin = async (e) => {
     e.preventDefault();
     getUserAccount();
@@ -102,8 +115,13 @@ const AppContextProvider = ({ children }) => {
         dataMessages,
         getMessages,
         getRealTimeMessages,
-        openPopUp,
-        isOpenModal
+        setIsOpenModal,
+        isOpenModal,
+        chatRoomID,
+        setChatRoomID,
+        createRoom,
+        getRoomData,
+        rooms
       }}
     >
       {children}

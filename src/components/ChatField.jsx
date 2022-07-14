@@ -1,25 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { useAppContext } from "../context/AppContext";
+import callImg from '../assets/night-call.png'
 
 const ChatField = () => {
-  const { sendMessage, getMessages, dataMessages, getRealTimeMessages } =
+  const { sendMessage, getMessages, dataMessages, getRealTimeMessages,chatRoomID } =
     useAppContext();
   const [text, setText] = useState("");
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  useEffect(()=>{scrollToBottom() }, [dataMessages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [dataMessages]);
 
   useEffect(() => {
     getMessages();
-    
   }, []);
-  useEffect(()=>{
+  useEffect(() => {
     getRealTimeMessages();
-  },[])
-  return (
+  }, []);
+  return chatRoomID.trim().length === 0 ? (
+    <div className="chat-field">
+      <img src={callImg} alt="zxzx" />
+      <h2>Rumpi App</h2>
+      <p>Connected with your friend by chatting </p>
+    </div>
+  ) : (
     <div className="chat-field">
       <div className="chat-container">
         {dataMessages &&
@@ -30,7 +38,7 @@ const ChatField = () => {
 
             return <ChatCard key={d.id} isUser={false} {...d} />;
           })}
-          <div ref={messagesEndRef}/>
+        <div ref={messagesEndRef} />
       </div>
       <div className="group-form">
         <input
@@ -42,7 +50,6 @@ const ChatField = () => {
           onClick={() => {
             if (text.trim().length !== 0) {
               sendMessage(text);
-
             }
           }}
         >

@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 
 const RoomField = () => {
-  const {openPopUp} = useAppContext()
+  const {setIsOpenModal,getRoomData,rooms} = useAppContext()
+  useEffect(()=>{
+    getRoomData()
+  },[])
   return (
     <div className="room-field">
       <UserField />
-      <RoomContainer />
-      <RoomContainer />
-      <button onClick={()=> openPopUp(true)}>+</button>
+      {
+        rooms && rooms.map(r =><RoomContainer key={r.id} {...r}/>)
+      }
+      <button onClick={()=> setIsOpenModal(true)}>+</button>
     </div>
   );
 };
@@ -23,16 +27,15 @@ const UserField = () => {
     </div>
   );
 };
-const RoomContainer = () => {
-  const [isActive, setisActive] = useState(false);
+const RoomContainer = ({id,name}) => {
+  const {setChatRoomID} = useAppContext()
   return (
     <div 
     className="room-container" 
-    onClick={() => setisActive(!isActive)}
+    onClick={() => {setChatRoomID(id)}}
     // style={{backgroundColor: isActive? "#bb86fc" : "#1e2021"}}
-
     >
-      <h3>Room 1</h3>
+      <h3>{name}</h3>
     </div>
   );
 };
