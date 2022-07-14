@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { useAppContext } from "../context/AppContext";
-import callImg from '../assets/night-call.png'
+import callImg from "../assets/night-call.png";
 
 const ChatField = () => {
-  const { sendMessage, getMessages, dataMessages, getRealTimeMessages,chatRoomID } =
-    useAppContext();
+  const {
+    sendMessage,
+    getMessages,
+    dataMessages,
+    getRealTimeMessages,
+
+    chatRoomID,
+  } = useAppContext();
   const [text, setText] = useState("");
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
@@ -16,8 +22,8 @@ const ChatField = () => {
   }, [dataMessages]);
 
   useEffect(() => {
-    getMessages();
-  }, []);
+    getMessages(chatRoomID);
+  }, [chatRoomID]);
   useEffect(() => {
     getRealTimeMessages();
   }, []);
@@ -49,8 +55,9 @@ const ChatField = () => {
         <button
           onClick={() => {
             if (text.trim().length !== 0) {
-              sendMessage(text);
+              sendMessage(text, chatRoomID);
             }
+            setText("")
           }}
         >
           <SendIcon />

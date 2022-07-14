@@ -2,9 +2,13 @@ import React, { useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 
 const RoomField = () => {
-  const {setIsOpenModal,getRoomData,rooms} = useAppContext()
+  const {setIsOpenModal,getRoomData,rooms,getRealTimeRooms} = useAppContext()
   useEffect(()=>{
     getRoomData()
+    console.log("first")
+  },[])
+  useEffect(()=>{
+    getRealTimeRooms()
   },[])
   return (
     <div className="room-field">

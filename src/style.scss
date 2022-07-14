@@ -102,6 +102,12 @@ button {
     .room-field {
       background-color: #1e2021;
       flex: 2;
+      display: flex;
+      flex-direction: column;
+      button{
+        border-radius: 0;
+        background-color: #bb86fc;
+      }
       .user-field {
         background-color: #121212;
         padding: 16px;
@@ -177,16 +183,16 @@ button {
         border-radius: 0px;
         width: 100%;
         margin-bottom: 0px;
-
         input {
           width: 100%;
           margin: 8px;
           background-color: #1e2021;
         }
         button {
-          padding: 8px 16px;
+          padding: 0px 8px;
+          margin: 8px;
           display: flex;
-          border-radius: 0px;
+          border-radius: 100%;
           align-items: center;
           background-color: #bb86fc;
         }

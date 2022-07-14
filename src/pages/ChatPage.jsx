@@ -6,7 +6,6 @@ import { useAppContext } from '../context/AppContext'
 
 const ChatPage = () => {
   const {isOpenModal} = useAppContext()
-  console.log(isOpenModal)
   return (
     <div className='chat-page'>
       {isOpenModal? <AddRoomPopUp/> : null}

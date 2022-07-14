@@ -5,7 +5,6 @@ import { useHistory } from "react-router-dom";
 const AppContext = createContext({});
 
 const AppContextProvider = ({ children }) => {
-  let subscription;
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [userID, setUserID] = useState(null);
@@ -15,7 +14,7 @@ const AppContextProvider = ({ children }) => {
   const [rooms,setRooms] = useState([])
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
-  const [dataMessages, setDataMessages] = useState(null);
+  const [dataMessages, setDataMessages] = useState([]);
   const history = useHistory();
   const supabase = createClient(
     "https://utybkjndivaewaatsisa.supabase.co",
@@ -71,27 +70,36 @@ const AppContextProvider = ({ children }) => {
       throw new Error(error);
     }
   };
-  const getRealTimeMessages = async () => {
-    subscription = supabase
+  const sendMessage = async (message,roomID) => {
+    try {
+      await supabase
+        .from("messages")
+        .insert([{ text: message, user_id: localStorage.getItem("user_id"),room_id: roomID }])
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+  const getRealTimeMessages =  () => {
+    const subscription = supabase
       .from("messages")
-      .on("INSERT", (payload) =>
+      .on("INSERT", (payload) =>{
         setDataMessages((current) => [...current, payload.new])
+      }
       )
       .subscribe();
     return () => {
       supabase.removeSubscription(subscription);
     };
   };
-  const sendMessage = async (message) => {
-    try {
-      await supabase
-        .from("messages")
-        .insert([{ text: message, user_id: localStorage.getItem("user_id") }])
-        .single();
-    } catch (error) {
-      throw new Error(error);
+  const getRealTimeRooms =() =>{
+    const subscription = supabase.from("rooms").on("INSERT",(payload) => {
+      setRooms((current) => [...current,payload.new])
+    }).subscribe()
+    return () => {
+      supabase.removeSubscription(subscription)
     }
-  };
+  }
+  
   const onHandleLogin = async (e) => {
     e.preventDefault();
     getUserAccount();
@@ -121,7 +129,8 @@ const AppContextProvider = ({ children }) => {
         setChatRoomID,
         createRoom,
         getRoomData,
-        rooms
+        rooms,
+        getRealTimeRooms
       }}
     >
       {children}
