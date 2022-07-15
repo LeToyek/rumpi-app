@@ -1,8 +1,11 @@
 import React from 'react'
 import AuthForm from '../components/AuthForm'
+import LoadingSection from '../components/LoadingSection'
+import { useAppContext } from '../context/AppContext'
 
 const LoginPage = () => {
-  return (
+  const {isLoading} = useAppContext()
+  return isLoading ? <LoadingSection/>:(
     <div className='login-page'>
       <AuthForm isLogin={false}/>
     </div>

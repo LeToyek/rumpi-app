@@ -9,7 +9,6 @@ const ChatField = () => {
     getMessages,
     dataMessages,
     getRealTimeMessages,
-
     chatRoomID,
   } = useAppContext();
   const [text, setText] = useState("");

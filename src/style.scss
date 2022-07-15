@@ -26,7 +26,7 @@ button {
   border-radius: 8px;
   cursor: pointer;
   padding: 8px 16px;
-  background-color: #6002ee;
+  background-color: #bb86fc;
   border: none;
   font-weight: bold;
 }
@@ -78,23 +78,36 @@ button {
   }
   .chat-page {
     height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
     display: flex;
     .cr-popup {
       position: absolute;
       height: 100%;
-
+      background-color: #2b2b2b7b;
       display: flex;
       justify-content: center;
       align-items: center;
       left: 0;
       right: 0;
-      .container{
+      .close-icon{
+        padding: 0px;
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        cursor: pointer;
+      }
+      h1{
+        line-height: 80%;
+        margin-bottom: 8px;
+      }
+      .container {
         align-items: center;
         background-color: #121212;
         width: 300px;
         padding: 16px;
         border-radius: 12px;
-        input{
+        input {
           width: 100%;
         }
       }
@@ -104,8 +117,22 @@ button {
       flex: 2;
       display: flex;
       flex-direction: column;
-      button{
-        border-radius: 0;
+      .rooms-wrapper {
+        overflow: auto;
+      }
+      button {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        bottom: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0px;
+        left: 20%;
+        color: #fff;
+        border-radius: 50px;
+        text-align: center;
         background-color: #bb86fc;
       }
       .user-field {
@@ -139,7 +166,7 @@ button {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      img{
+      img {
         width: 500px;
       }
       .chat-container {

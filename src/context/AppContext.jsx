@@ -8,6 +8,7 @@ const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [userID, setUserID] = useState(null);
+  const [userData,setUserData] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [isWrong, setIsWrong] = useState(false);
   const [chatRoomID,setChatRoomID] = useState("")
@@ -27,13 +28,14 @@ const AppContextProvider = ({ children }) => {
     try {
       let data = await supabase
         .from("users")
-        .select(`id,Password`)
+        .select(`*`)
         .eq("Username", Username);
-      setIsLoading(true);
       if (data.body[0].Password === Password) {
         setIsLoading(false);
         setIsWrong(false);
         setUserID(data.body[0].id);
+        setUserData(data.body)
+        
       } else {
         setIsWrong(true);
       }
@@ -60,8 +62,9 @@ const AppContextProvider = ({ children }) => {
     if (userID) {
       localStorage.setItem("user_id", userID);
       history.push("/chat");
+      console.log(userData)
     }
-  }, [userID]);
+  }, [userID,userData]);
   const getMessages = async (roomID) => {
     try {
       let data = await supabase.from("messages").select(`*,users(Username)`).eq("room_id",roomID);
@@ -87,7 +90,9 @@ const AppContextProvider = ({ children }) => {
       }
       )
       .subscribe();
+      console.log("first")
     return () => {
+      
       supabase.removeSubscription(subscription);
     };
   };
@@ -130,7 +135,10 @@ const AppContextProvider = ({ children }) => {
         createRoom,
         getRoomData,
         rooms,
-        getRealTimeRooms
+        getRealTimeRooms,
+        userData,
+        isLoading,
+        getUserAccount
       }}
     >
       {children}
