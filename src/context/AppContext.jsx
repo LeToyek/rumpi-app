@@ -92,19 +92,12 @@ const AppContextProvider = ({ children }) => {
       throw new Error(error);
     }
   };
-  const getUsername = async (payload) =>{
-    const username = (await supabase.from("users").select("*").eq("id", payload.new.id)).body
-    console.log(username)
-    setChatUsername(username)
-  }
   const getRealTimeMessages =  () => {
     const subscription = supabase
       .from("messages")
       // .select(`*,users(Username)`)
       .on("INSERT", (payload) =>{
-        getUsername(payload)
-        console.log(chatUsername)
-        console.log( "-------------->>>>"+payload.new.user_id)
+        getMessages(payload.new.room_id)
         setDataMessages((current) => [...current, {...payload.new}])
         console.log("------->>"+dataMessages)
       }
