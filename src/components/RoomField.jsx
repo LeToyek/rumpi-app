@@ -11,13 +11,13 @@ const RoomField = () => {
   } = useAppContext();
   useEffect(() => {
     getRoomData();
-  }, []);
+  }, [rooms]);
   useEffect(() => {
     getRealTimeRooms();
   }, []);
   return (
     <div className="room-field">
-      <UserField Username={userData[0].Username} />
+      <UserField Username={userData?.Username} />
       <div className="rooms-wrapper">
         {rooms && rooms.map((r) => <RoomContainer key={r.id} {...r} />)}
       </div>

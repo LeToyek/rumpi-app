@@ -18,14 +18,12 @@ const ChatField = () => {
   };
   useEffect(() => {
     scrollToBottom();
+    console.log(dataMessages);
   }, [dataMessages]);
-
   useEffect(() => {
     getMessages(chatRoomID);
-  }, [chatRoomID]);
-  useEffect(() => {
     getRealTimeMessages();
-  }, []);
+  }, [chatRoomID]);
   return chatRoomID.trim().length === 0 ? (
     <div className="chat-field">
       <img src={callImg} alt="zxzx" />
@@ -45,23 +43,22 @@ const ChatField = () => {
           })}
         <div ref={messagesEndRef} />
       </div>
-      <div className="group-form">
+      <form className="group-form" onSubmit={(e) => {
+        e.preventDefault()
+            if (text.trim().length !== 0) {
+              sendMessage(text, chatRoomID);
+            }
+            setText("")
+          }}>
         <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <button
-          onClick={() => {
-            if (text.trim().length !== 0) {
-              sendMessage(text, chatRoomID);
-            }
-            setText("")
-          }}
-        >
+        <button>
           <SendIcon />
         </button>
-      </div>
+      </form>
     </div>
   );
 };

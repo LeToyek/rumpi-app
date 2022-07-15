@@ -7,6 +7,7 @@ const AppContext = createContext({});
 const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
+  const [chatUsername,setChatUsername] = useState(null)
   const [userID, setUserID] = useState(null);
   const [userData,setUserData] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -24,6 +25,15 @@ const AppContextProvider = ({ children }) => {
   const postUserAccount = async () => {
     await supabase.from("users").insert([{ Username, Password }]).single();
   };
+  const getUserById = async () => {
+    try {
+      const data = await supabase.from("users").select("*").eq("id",localStorage.getItem("user_id"))
+      setUserData(data.body[0])
+      console.log(userData)
+    } catch (error) {
+      
+    }
+  }
   const getUserAccount = async () => {
     try {
       let data = await supabase
@@ -62,12 +72,12 @@ const AppContextProvider = ({ children }) => {
     if (userID) {
       localStorage.setItem("user_id", userID);
       history.push("/chat");
-      console.log(userData)
     }
   }, [userID,userData]);
   const getMessages = async (roomID) => {
     try {
       let data = await supabase.from("messages").select(`*,users(Username)`).eq("room_id",roomID);
+      console.log(data)
       setDataMessages(data.body);
     } catch (error) {
       throw new Error(error);
@@ -82,11 +92,21 @@ const AppContextProvider = ({ children }) => {
       throw new Error(error);
     }
   };
+  const getUsername = async (payload) =>{
+    const username = (await supabase.from("users").select("*").eq("id", payload.new.id)).body
+    console.log(username)
+    setChatUsername(username)
+  }
   const getRealTimeMessages =  () => {
     const subscription = supabase
       .from("messages")
+      // .select(`*,users(Username)`)
       .on("INSERT", (payload) =>{
-        setDataMessages((current) => [...current, payload.new])
+        getUsername(payload)
+        console.log(chatUsername)
+        console.log( "-------------->>>>"+payload.new.user_id)
+        setDataMessages((current) => [...current, {...payload.new}])
+        console.log("------->>"+dataMessages)
       }
       )
       .subscribe();
@@ -138,7 +158,8 @@ const AppContextProvider = ({ children }) => {
         getRealTimeRooms,
         userData,
         isLoading,
-        getUserAccount
+        getUserAccount,
+        getUserById
       }}
     >
       {children}

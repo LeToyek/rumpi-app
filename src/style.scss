@@ -90,14 +90,14 @@ button {
       align-items: center;
       left: 0;
       right: 0;
-      .close-icon{
+      .close-icon {
         padding: 0px;
         width: 100%;
         display: flex;
         justify-content: end;
         cursor: pointer;
       }
-      h1{
+      h1 {
         line-height: 80%;
         margin-bottom: 8px;
       }
@@ -119,6 +119,10 @@ button {
       flex-direction: column;
       .rooms-wrapper {
         overflow: auto;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
       }
       button {
         position: fixed;
