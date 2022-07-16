@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap');
 * {
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
@@ -46,6 +47,54 @@ button {
 
 .App {
   min-height: 100vh;
+  .c-snackbar{
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    h3{
+      margin-left: 8px;
+      font-weight: 300;
+    }
+  }
+  .homepage{
+    display: flex;
+    height: 100vh;
+    padding: 40px 100px;
+    align-items: center;
+    img{
+      margin-right: 60px;
+      height: 500px;
+    }
+    .right{
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      h1{
+        color: white;
+        font-weight: 700;
+        font-size: 120px;
+        font-family: 'Raleway', sans-serif;
+      }
+      span{
+        color: #bb86fc;
+      }
+      button{
+        height: 50px;
+        width: 150px;
+        transition: .2s ease;
+        &:hover{
+          background-color: white;
+          color: #bb86fc;
+        }
+        &:active{
+          background-color: #bb86fc;
+          color: white;
+        }
+      }
+    }
+  }
   .login-page {
     height: 100vh;
     display: flex;
@@ -266,12 +315,12 @@ button {
           background-color: #1e2021;
         }
         button {
-          padding: 0px 8px;
+          padding: 0px 0px;
           margin: 8px;
           display: flex;
-          border-radius: 100%;
+          border-radius: 0%;
           align-items: center;
-          background-color: #bb86fc;
+          background-color: transparent;
         }
       }
     }

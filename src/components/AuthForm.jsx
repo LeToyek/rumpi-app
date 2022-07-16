@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-const AuthForm = ({ isLogin }) => {
-  const [LoginStatus, setLoginStatus] = useState(isLogin);
+const AuthForm = () => {
+  const {LoginStatus, setLoginStatus} = useAppContext()
   const [isVisible, setIsVisible] = useState(false);
   const {
     Username,
@@ -13,11 +13,18 @@ const AuthForm = ({ isLogin }) => {
     onHandleLogin,
     onHandleRegister,
     isWrong,
+    setIsOpenSnackBar,
   } = useAppContext();
 
   return (
     <form
-      onSubmit={(e) => (LoginStatus ? onHandleLogin(e) : onHandleRegister(e))}
+      onSubmit={(e) => {
+        (LoginStatus ? onHandleLogin(e) : onHandleRegister(e))
+        setIsOpenSnackBar(true)
+        setTimeout(() => {
+          setIsOpenSnackBar(false)
+        }, 3000);
+      }}
     >
       <label>Username</label>
       <input

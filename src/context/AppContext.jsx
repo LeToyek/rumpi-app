@@ -7,14 +7,15 @@ const AppContext = createContext({});
 const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
-  const [chatUsername, setChatUsername] = useState(null);
+  const [LoginStatus, setLoginStatus] = useState(false);
   const [userID, setUserID] = useState(null);
   const [userData, setUserData] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
   const [chatRoomID, setChatRoomID] = useState("");
   const [rooms, setRooms] = useState([]);
-  const [error, setError] = useState(null);
+  const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
+  const [err, setErr] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState([]);
   const history = useHistory();
@@ -23,7 +24,15 @@ const AppContextProvider = ({ children }) => {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWJram5kaXZhZXdhYXRzaXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTc1MTE2NjcsImV4cCI6MTk3MzA4NzY2N30.rx3pZlxCK8p1WQTy-zUiMNsUdKzVHwhltVRhzni38NE"
   );
   const postUserAccount = async () => {
-    await supabase.from("users").insert([{ Username, Password }]).single();
+    const { error } = await supabase
+      .from("users")
+      .insert([{ Username, Password }])
+      .single();
+    if (error !== null) {
+      setErr(error);
+    } else {
+      setErr(null);
+    }
   };
   const getUserById = async () => {
     try {
@@ -32,7 +41,8 @@ const AppContextProvider = ({ children }) => {
         .select("*")
         .eq("id", localStorage.getItem("user_id"));
       setUserData(data.body[0]);
-    } catch (error) {}
+      setIsLoading(false);
+    } catch (err) {}
   };
   const getUserAccount = async () => {
     try {
@@ -48,16 +58,16 @@ const AppContextProvider = ({ children }) => {
       } else {
         setIsWrong(true);
       }
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setErr(err);
     }
   };
   const getRoomData = async () => {
     try {
       const data = await supabase.from("rooms").select("*");
       setRooms(data.body);
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setErr(err);
     }
   };
   const createRoom = async (name) => {
@@ -65,8 +75,8 @@ const AppContextProvider = ({ children }) => {
       await supabase
         .from("rooms")
         .insert([{ name, user_id: localStorage.getItem("user_id") }]);
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setErr(err);
     }
   };
   useEffect(() => {
@@ -82,24 +92,24 @@ const AppContextProvider = ({ children }) => {
         .select(`*,users(Username)`)
         .eq("room_id", roomID);
       setDataMessages(data.body);
-    } catch (error) {
-      throw new Error(error);
+    } catch (err) {
+      setErr(err);
     }
   };
   const deleteMessage = async (chatID) => {
     try {
       await supabase.from("messages").delete().match({ id: chatID });
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setErr(err);
     }
   };
   const editMessage = async (chatID, newMessage) => {
     const { data, error } = await supabase
       .from("messages")
       .update({ text: newMessage })
-      .match({id: chatID});
+      .match({ id: chatID });
     console.log(data);
-    error && setError(error)  
+    error && setErr(error);
   };
   const sendMessage = async (message, roomID) => {
     try {
@@ -110,25 +120,24 @@ const AppContextProvider = ({ children }) => {
           room_id: roomID,
         },
       ]);
-    } catch (error) {
-      throw new Error(error);
+    } catch (err) {
+      throw new err(err);
     }
   };
   const handleRealtime = (payload) => {
     setDataMessages((current) => [...current, { ...payload.new }]);
     getMessages(payload.new.room_id);
-    
   };
   const getRealTimeMessages = () => {
     const subscription = supabase
       .from("messages")
       .on("INSERT", (payload) => {
         handleRealtime(payload);
-        console.log(payload)
-      })
-      .on("DELETE", payload => {
-        // getMessages(payload.old.)
         console.log(payload);
+      })
+      .on("DELETE", (payload) => {
+        getMessages(chatRoomID);
+        console.log(chatRoomID);
       })
       .on("UPDATE", (payload) => {
         handleRealtime(payload);
@@ -186,7 +195,13 @@ const AppContextProvider = ({ children }) => {
         getUserAccount,
         getUserById,
         deleteMessage,
-        editMessage
+        editMessage,
+        setIsLoading,
+        isOpenSnackBar,
+        setIsOpenSnackBar,
+        err,
+        LoginStatus,
+        setLoginStatus,
       }}
     >
       {children}

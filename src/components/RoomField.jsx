@@ -8,12 +8,15 @@ const RoomField = () => {
     rooms,
     getRealTimeRooms,
     userData,
+    setIsLoading
   } = useAppContext();
   useEffect(() => {
     getRoomData();
   }, [rooms]);
   useEffect(() => {
+    setIsLoading(true)
     getRealTimeRooms();
+    setIsLoading(false)
   }, []);
   return (
     <div className="room-field">
@@ -45,7 +48,6 @@ const RoomContainer = ({ id, name }) => {
       onClick={() => {
         setChatRoomID(id);
       }}
-      // style={{backgroundColor: isActive? "#bb86fc" : "#1e2021"}}
     >
       <h3>{name}</h3>
     </div>
