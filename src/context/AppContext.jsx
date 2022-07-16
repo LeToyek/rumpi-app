@@ -7,14 +7,14 @@ const AppContext = createContext({});
 const AppContextProvider = ({ children }) => {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
-  const [chatUsername,setChatUsername] = useState(null)
+  const [chatUsername, setChatUsername] = useState(null);
   const [userID, setUserID] = useState(null);
-  const [userData,setUserData] = useState(null)
-  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [userData, setUserData] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
-  const [chatRoomID,setChatRoomID] = useState("")
-  const [rooms,setRooms] = useState([])
-  const [error, setError] = useState(null)
+  const [chatRoomID, setChatRoomID] = useState("");
+  const [rooms, setRooms] = useState([]);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState([]);
   const history = useHistory();
@@ -27,13 +27,13 @@ const AppContextProvider = ({ children }) => {
   };
   const getUserById = async () => {
     try {
-      const data = await supabase.from("users").select("*").eq("id",localStorage.getItem("user_id"))
-      setUserData(data.body[0])
-      console.log(userData)
-    } catch (error) {
-      
-    }
-  }
+      const data = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", localStorage.getItem("user_id"));
+      setUserData(data.body[0]);
+    } catch (error) {}
+  };
   const getUserAccount = async () => {
     try {
       let data = await supabase
@@ -44,80 +44,112 @@ const AppContextProvider = ({ children }) => {
         setIsLoading(false);
         setIsWrong(false);
         setUserID(data.body[0].id);
-        setUserData(data.body)
-        
+        setUserData(data.body);
       } else {
         setIsWrong(true);
       }
     } catch (error) {
-      setError(error)
+      setError(error);
     }
   };
   const getRoomData = async () => {
     try {
-      const data = await supabase.from("rooms").select('*')
-      setRooms(data.body)
+      const data = await supabase.from("rooms").select("*");
+      setRooms(data.body);
     } catch (error) {
-      setError(error)
+      setError(error);
     }
-  }
+  };
   const createRoom = async (name) => {
     try {
-      await supabase.from("rooms").insert([{name,user_id: localStorage.getItem("user_id")}])
+      await supabase
+        .from("rooms")
+        .insert([{ name, user_id: localStorage.getItem("user_id") }]);
     } catch (error) {
-      setError(error)
+      setError(error);
     }
-  }
+  };
   useEffect(() => {
     if (userID) {
       localStorage.setItem("user_id", userID);
       history.push("/chat");
     }
-  }, [userID,userData]);
+  }, [userID, userData]);
   const getMessages = async (roomID) => {
     try {
-      let data = await supabase.from("messages").select(`*,users(Username)`).eq("room_id",roomID);
-      console.log(data)
+      let data = await supabase
+        .from("messages")
+        .select(`*,users(Username)`)
+        .eq("room_id", roomID);
       setDataMessages(data.body);
     } catch (error) {
       throw new Error(error);
     }
   };
-  const sendMessage = async (message,roomID) => {
+  const deleteMessage = async (chatID) => {
     try {
-      await supabase
-        .from("messages")
-        .insert([{ text: message, user_id: localStorage.getItem("user_id"),room_id: roomID }])
+      await supabase.from("messages").delete().match({ id: chatID });
+    } catch (error) {
+      setError(error);
+    }
+  };
+  const editMessage = async (chatID, newMessage) => {
+    const { data, error } = await supabase
+      .from("messages")
+      .update({ text: newMessage })
+      .match({id: chatID});
+    console.log(data);
+    error && setError(error)  
+  };
+  const sendMessage = async (message, roomID) => {
+    try {
+      await supabase.from("messages").insert([
+        {
+          text: message,
+          user_id: localStorage.getItem("user_id"),
+          room_id: roomID,
+        },
+      ]);
     } catch (error) {
       throw new Error(error);
     }
   };
-  const getRealTimeMessages =  () => {
+  const handleRealtime = (payload) => {
+    setDataMessages((current) => [...current, { ...payload.new }]);
+    getMessages(payload.new.room_id);
+    
+  };
+  const getRealTimeMessages = () => {
     const subscription = supabase
       .from("messages")
-      // .select(`*,users(Username)`)
-      .on("INSERT", (payload) =>{
-        getMessages(payload.new.room_id)
-        setDataMessages((current) => [...current, {...payload.new}])
-        console.log("------->>"+dataMessages)
-      }
-      )
+      .on("INSERT", (payload) => {
+        handleRealtime(payload);
+        console.log(payload)
+      })
+      .on("DELETE", payload => {
+        // getMessages(payload.old.)
+        console.log(payload);
+      })
+      .on("UPDATE", (payload) => {
+        handleRealtime(payload);
+      })
       .subscribe();
-      console.log("first")
     return () => {
-      
       supabase.removeSubscription(subscription);
     };
   };
-  const getRealTimeRooms =() =>{
-    const subscription = supabase.from("rooms").on("INSERT",(payload) => {
-      setRooms((current) => [...current,payload.new])
-    }).subscribe()
+  const getRealTimeRooms = () => {
+    const subscription = supabase
+      .from("rooms")
+      .on("INSERT", (payload) => {
+        setRooms((current) => [...current, payload.new]);
+      })
+      .subscribe();
     return () => {
-      supabase.removeSubscription(subscription)
-    }
-  }
-  
+      supabase.removeSubscription(subscription);
+    };
+  };
+
   const onHandleLogin = async (e) => {
     e.preventDefault();
     getUserAccount();
@@ -152,7 +184,9 @@ const AppContextProvider = ({ children }) => {
         userData,
         isLoading,
         getUserAccount,
-        getUserById
+        getUserById,
+        deleteMessage,
+        editMessage
       }}
     >
       {children}

@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { useAppContext } from "../context/AppContext";
 import callImg from "../assets/night-call.png";
-
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 const ChatField = () => {
   const {
     sendMessage,
@@ -18,7 +21,6 @@ const ChatField = () => {
   };
   useEffect(() => {
     scrollToBottom();
-    console.log(dataMessages);
   }, [dataMessages]);
   useEffect(() => {
     getMessages(chatRoomID);
@@ -43,13 +45,16 @@ const ChatField = () => {
           })}
         <div ref={messagesEndRef} />
       </div>
-      <form className="group-form" onSubmit={(e) => {
-        e.preventDefault()
-            if (text.trim().length !== 0) {
-              sendMessage(text, chatRoomID);
-            }
-            setText("")
-          }}>
+      <form
+        className="group-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (text.trim().length !== 0) {
+            sendMessage(text, chatRoomID);
+          }
+          setText("");
+        }}
+      >
         <input
           type="text"
           value={text}
@@ -62,7 +67,9 @@ const ChatField = () => {
     </div>
   );
 };
-const ChatCard = ({ isUser, text, time, users }) => {
+const ChatCard = ({ isUser, text, time, users, id }) => {
+  const [style, setStyle] = useState({ display: "none" });
+  const [isShowOption, setIsShowOption] = useState(false);
   let username;
   if (users) username = users.Username;
   return (
@@ -73,7 +80,22 @@ const ChatCard = ({ isUser, text, time, users }) => {
             {username}
             <span>{time}</span>
           </h5>
-          <div className="chat-card">
+
+          <div
+            className="chat-card"
+            onMouseEnter={() => setStyle({ display: "block" })}
+            onMouseLeave={() => setStyle({ display: "none" })}
+          >
+            {isShowOption ? (
+              <Options closeMe={() => setIsShowOption(false)} chatID={id} />
+            ) : null}
+            <div
+              className="more-icon"
+              style={style}
+              onClick={() => setIsShowOption(true)}
+            >
+              <MoreHorizIcon />
+            </div>
             <p>{text}</p>
           </div>
         </div>
@@ -83,12 +105,49 @@ const ChatCard = ({ isUser, text, time, users }) => {
             {username}
             <span>{time}</span>
           </h5>
-          <div className="chat-card">
+
+          <div
+            className="chat-card"
+            onMouseEnter={() => setStyle({ display: "block" })}
+            onMouseLeave={() => setStyle({ display: "none" })}
+          >
+            {isShowOption ? (
+              <Options closeMe={() => setIsShowOption(false)} chatID={id} />
+            ) : null}
+            <div
+              className="more-icon"
+              style={style}
+              onClick={() => setIsShowOption(true)}
+            >
+              <MoreHorizIcon />
+            </div>
             <p>{text}</p>
           </div>
         </div>
       )}
     </>
+  );
+};
+const Options = ({ closeMe, chatID }) => {
+  const { deleteMessage } = useAppContext();
+  return (
+    <div className="options">
+      <div className="wrapper" onClick={() => {
+        deleteMessage(chatID)
+        closeMe()
+        }}>
+        <DeleteIcon />
+        <h4>Delete</h4>
+      </div>
+      <div className="wrapper">
+        <EditIcon />
+        <h4>Edit</h4>
+      </div>
+      <div className="wrapper" onClick={closeMe}>
+        <ClearOutlinedIcon />
+        <h4>Cancel</h4>
+      </div>
+    </div>
   );
 };
 export default ChatField;
