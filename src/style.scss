@@ -130,6 +130,17 @@ button {
     max-height: 100vh;
     overflow: hidden;
     display: flex;
+    position: relative;
+    .edit-field{
+      position: absolute;
+      background-color: #121212;
+      border-radius: 8px;
+      padding: 8px 16px;
+      .buttons{
+        display: flex;
+        justify-content: space-between;
+      }
+    }
     .cr-popup {
       position: absolute;
       height: 100%;
@@ -217,9 +228,17 @@ button {
       height: 100vh;
       flex: 5;
       display: flex;
+      position: relative;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      .empty-message{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
       img {
         width: 500px;
       }
@@ -263,6 +282,7 @@ button {
                 &:hover {
                   background-color: #bb86fc;
                 }
+
 
                 h4 {
                   font-weight: 400;

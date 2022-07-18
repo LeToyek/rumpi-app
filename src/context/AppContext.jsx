@@ -18,6 +18,8 @@ const AppContextProvider = ({ children }) => {
   const [err, setErr] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState([]);
+  const [isShowEditField, setIsShowEditField] = useState(false);
+  const [chatID,setChatID] = useState("")
   const history = useHistory();
   const supabase = createClient(
     "https://utybkjndivaewaatsisa.supabase.co",
@@ -90,7 +92,7 @@ const AppContextProvider = ({ children }) => {
       let data = await supabase
         .from("messages")
         .select(`*,users(Username)`)
-        .eq("room_id", roomID);
+        .eq("room_id", roomID).order('created_at',{ascending: true});
       setDataMessages(data.body);
     } catch (err) {
       setErr(err);
@@ -124,29 +126,6 @@ const AppContextProvider = ({ children }) => {
       throw new err(err);
     }
   };
-  const handleRealtime = (payload) => {
-    setDataMessages((current) => [...current, { ...payload.new }]);
-    getMessages(payload.new.room_id);
-  };
-  const getRealTimeMessages = () => {
-    const subscription = supabase
-      .from("messages")
-      .on("INSERT", (payload) => {
-        handleRealtime(payload);
-        console.log(payload);
-      })
-      .on("DELETE", (payload) => {
-        getMessages(chatRoomID);
-        console.log(chatRoomID);
-      })
-      .on("UPDATE", (payload) => {
-        handleRealtime(payload);
-      })
-      .subscribe();
-    return () => {
-      supabase.removeSubscription(subscription);
-    };
-  };
   const getRealTimeRooms = () => {
     const subscription = supabase
       .from("rooms")
@@ -158,7 +137,26 @@ const AppContextProvider = ({ children }) => {
       supabase.removeSubscription(subscription);
     };
   };
-
+  useEffect(() => {
+    const subscription = supabase
+      .from("messages")
+      .on("INSERT", (payload) => {
+        getMessages(payload.new.room_id);
+      })
+      .on("DELETE", (payload) => {
+        getMessages(chatRoomID);
+      })
+      .on("UPDATE", (payload) => {
+        getMessages(chatRoomID);
+      })
+      .subscribe();
+    return () => {
+      supabase.removeSubscription(subscription);
+    };
+  }, [chatRoomID]);
+  useEffect(() => {
+    getRoomData();
+  }, [rooms]);
   const onHandleLogin = async (e) => {
     e.preventDefault();
     getUserAccount();
@@ -181,7 +179,6 @@ const AppContextProvider = ({ children }) => {
         sendMessage,
         dataMessages,
         getMessages,
-        getRealTimeMessages,
         setIsOpenModal,
         isOpenModal,
         chatRoomID,
@@ -202,6 +199,9 @@ const AppContextProvider = ({ children }) => {
         err,
         LoginStatus,
         setLoginStatus,
+        isShowEditField,
+        setIsShowEditField,
+        chatID,setChatID
       }}
     >
       {children}

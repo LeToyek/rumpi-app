@@ -6,15 +6,21 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import empty from '../assets/empty-mail.png'
 const ChatField = () => {
   const {
     sendMessage,
     getMessages,
     dataMessages,
-    getRealTimeMessages,
     chatRoomID,
+    isShowEditField,
+    setIsShowEditField,
+    chatID,
+    editMessage
   } = useAppContext();
   const [text, setText] = useState("");
+  const [editText, setEditText] = useState("");
+
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,7 +30,6 @@ const ChatField = () => {
   }, [dataMessages]);
   useEffect(() => {
     getMessages(chatRoomID);
-    getRealTimeMessages();
   }, [chatRoomID]);
   return chatRoomID.trim().length === 0 ? (
     <div className="chat-field">
@@ -34,13 +39,31 @@ const ChatField = () => {
     </div>
   ) : (
     <div className="chat-field">
+      {isShowEditField ? (
+        <div className="edit-field">
+          <h2>Edit Message</h2>
+          <input type="text" value={editText} onChange={e => setEditText(e.target.value)} autoFocus/>
+          <div className="buttons">
+            <button onClick={()=>{
+              editMessage(chatID,editText)
+              setEditText("")
+              setIsShowEditField(false)
+            }}>Edit</button>
+            <button onClick={()=>setIsShowEditField(false)}>Cancel</button>
+          </div>
+        </div>
+      ) : null}
+      {/* {dataMessages.length === 0 ? <div className="empty-message">
+        <img src={empty} alt="empty" />
+        <h2>No Message</h2>
+        <p>be the first one who say hello in this chat room </p>
+      </div>: null} */}
       <div className="chat-container">
         {dataMessages &&
           dataMessages.map((d) => {
             if (d.user_id === localStorage.getItem("user_id")) {
               return <ChatCard key={d.id} isUser={true} {...d} />;
             }
-
             return <ChatCard key={d.id} isUser={false} {...d} />;
           })}
         <div ref={messagesEndRef} />
@@ -129,20 +152,31 @@ const ChatCard = ({ isUser, text, time, users, id }) => {
   );
 };
 const Options = ({ closeMe, chatID }) => {
-  const { deleteMessage } = useAppContext();
+  const { deleteMessage, setChatID, setIsShowEditField } = useAppContext();
   return (
     <div className="options">
-      <div className="wrapper" onClick={() => {
-        deleteMessage(chatID)
-        closeMe()
-        }}>
+      <div
+        className="wrapper"
+        onClick={() => {
+          deleteMessage(chatID);
+          closeMe();
+        }}
+      >
         <DeleteIcon />
         <h4>Delete</h4>
       </div>
-      <div className="wrapper">
+      <div
+        className="wrapper"
+        onClick={() => {
+          setIsShowEditField(true);
+          setChatID(chatID)
+          closeMe()
+        }}
+      >
         <EditIcon />
         <h4>Edit</h4>
       </div>
+
       <div className="wrapper" onClick={closeMe}>
         <ClearOutlinedIcon />
         <h4>Cancel</h4>

@@ -10,9 +10,7 @@ const RoomField = () => {
     userData,
     setIsLoading
   } = useAppContext();
-  useEffect(() => {
-    getRoomData();
-  }, [rooms]);
+
   useEffect(() => {
     setIsLoading(true)
     getRealTimeRooms();
