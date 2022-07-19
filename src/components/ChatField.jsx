@@ -16,7 +16,7 @@ const ChatField = () => {
     isShowEditField,
     setIsShowEditField,
     chatID,
-    editMessage
+    editMessage,rooms
   } = useAppContext();
   const [text, setText] = useState("");
   const [editText, setEditText] = useState("");
@@ -25,6 +25,7 @@ const ChatField = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  const roomData = rooms.filter(e => e.id === chatRoomID)
   useEffect(() => {
     scrollToBottom();
   }, [dataMessages]);
@@ -53,6 +54,9 @@ const ChatField = () => {
           </div>
         </div>
       ) : null}
+      <div className="room-name">
+        <h2>🏚️ {roomData[0].name}</h2>
+      </div>
       {/* {dataMessages.length === 0 ? <div className="empty-message">
         <img src={empty} alt="empty" />
         <h2>No Message</h2>

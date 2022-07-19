@@ -5,6 +5,7 @@ const RoomField = () => {
   const {
     setIsOpenModal,
     getRoomData,
+    isOpenModal,
     rooms,
     getRealTimeRooms,
     userData,
@@ -23,7 +24,10 @@ const RoomField = () => {
         {rooms && rooms.map((r) => <RoomContainer key={r.id} {...r} />)}
       </div>
 
-      <button onClick={() => setIsOpenModal(true)}>+</button>
+      <button onClick={() => {
+        setIsOpenModal(true)
+        console.log(isOpenModal)
+        }}>+</button>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap");
 * {
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
@@ -47,48 +47,48 @@ button {
 
 .App {
   min-height: 100vh;
-  .c-snackbar{
+  .c-snackbar {
     display: flex;
     align-items: center;
     padding: 8px 16px;
     border-radius: 8px;
-    h3{
+    h3 {
       margin-left: 8px;
       font-weight: 300;
     }
   }
-  .homepage{
+  .homepage {
     display: flex;
     height: 100vh;
     padding: 40px 100px;
     align-items: center;
-    img{
+    img {
       margin-right: 60px;
       height: 500px;
     }
-    .right{
+    .right {
       height: 400px;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
-      h1{
+      h1 {
         color: white;
         font-weight: 700;
         font-size: 120px;
-        font-family: 'Raleway', sans-serif;
+        font-family: "Raleway", sans-serif;
       }
-      span{
+      span {
         color: #bb86fc;
       }
-      button{
+      button {
         height: 50px;
         width: 150px;
-        transition: .2s ease;
-        &:hover{
+        transition: 0.2s ease;
+        &:hover {
           background-color: white;
           color: #bb86fc;
         }
-        &:active{
+        &:active {
           background-color: #bb86fc;
           color: white;
         }
@@ -131,18 +131,19 @@ button {
     overflow: hidden;
     display: flex;
     position: relative;
-    .edit-field{
+    .edit-field {
       position: absolute;
       background-color: #121212;
       border-radius: 8px;
       padding: 8px 16px;
-      .buttons{
+      .buttons {
         display: flex;
         justify-content: space-between;
       }
     }
     .cr-popup {
       position: absolute;
+      z-index: 9;
       height: 100%;
       background-color: #2b2b2b7b;
       display: flex;
@@ -232,7 +233,17 @@ button {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      .empty-message{
+      .room-name{
+        text-align: start;
+        width: 100%;
+        padding: 16px 16px;
+        h2{
+          font-size: 27px;
+        }
+        background-color: #1e2021;
+        text-transform: capitalize;
+      }
+      .empty-message {
         position: absolute;
         display: flex;
         flex-direction: column;
@@ -263,7 +274,7 @@ button {
             position: relative;
             background-color: #404347;
             width: max-content;
-            max-width: 60%;
+            max-width: 75%;
             border-radius: 0px 10px 10px 10px;
             padding: 8px 16px;
             margin-bottom: 16px;
@@ -282,7 +293,6 @@ button {
                 &:hover {
                   background-color: #bb86fc;
                 }
-
 
                 h4 {
                   font-weight: 400;
@@ -317,7 +327,7 @@ button {
               left: 8px;
               right: auto;
             }
-            .options{
+            .options {
               right: auto;
               left: -120px;
             }
@@ -344,5 +354,12 @@ button {
         }
       }
     }
+  }
+}
+@media screen and (max-width: 400px)  {
+  .room-field {
+    background-color: red;
+    display: none;
+
   }
 }
