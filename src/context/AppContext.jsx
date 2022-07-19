@@ -19,7 +19,8 @@ const AppContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [dataMessages, setDataMessages] = useState([]);
   const [isShowEditField, setIsShowEditField] = useState(false);
-  const [chatID,setChatID] = useState("")
+  const [isShowRoom, setIsShowRoom] = useState(true);
+  const [chatID, setChatID] = useState("");
   const history = useHistory();
   const supabase = createClient(
     "https://utybkjndivaewaatsisa.supabase.co",
@@ -44,7 +45,9 @@ const AppContextProvider = ({ children }) => {
         .eq("id", localStorage.getItem("user_id"));
       setUserData(data.body[0]);
       setIsLoading(false);
-    } catch (err) {}
+    } catch (err) {
+      setErr(err)
+    }
   };
   const getUserAccount = async () => {
     try {
@@ -92,7 +95,8 @@ const AppContextProvider = ({ children }) => {
       let data = await supabase
         .from("messages")
         .select(`*,users(Username)`)
-        .eq("room_id", roomID).order('created_at',{ascending: true});
+        .eq("room_id", roomID)
+        .order("created_at", { ascending: true });
       setDataMessages(data.body);
     } catch (err) {
       setErr(err);
@@ -201,7 +205,10 @@ const AppContextProvider = ({ children }) => {
         setLoginStatus,
         isShowEditField,
         setIsShowEditField,
-        chatID,setChatID
+        chatID,
+        setChatID,
+        isShowRoom,
+        setIsShowRoom,
       }}
     >
       {children}

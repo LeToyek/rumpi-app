@@ -120,7 +120,7 @@ button {
           align-items: center;
           padding: 0px;
           background-color: transparent;
-          margin-right: 12px;
+          margin-right: 32px;
         }
       }
     }
@@ -233,11 +233,11 @@ button {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      .room-name{
+      .room-name {
         text-align: start;
         width: 100%;
         padding: 16px 16px;
-        h2{
+        h2 {
           font-size: 27px;
         }
         background-color: #1e2021;
@@ -293,7 +293,9 @@ button {
                 &:hover {
                   background-color: #bb86fc;
                 }
-
+                &:active{
+                  background-color: #bb86fc;
+                }
                 h4 {
                   font-weight: 400;
                   margin-left: 12px;
@@ -345,10 +347,9 @@ button {
           background-color: #1e2021;
         }
         button {
-          padding: 0px 0px;
+          padding: 0px ;
           margin: 8px;
           display: flex;
-          border-radius: 0%;
           align-items: center;
           background-color: transparent;
         }
@@ -356,10 +357,58 @@ button {
     }
   }
 }
-@media screen and (max-width: 400px)  {
-  .room-field {
-    background-color: red;
-    display: none;
+@media screen and (max-width: 500px) {
+  .App {
+    .login-page{
+      form{
+        .group-form{
+          button{
+            margin-right: 16px;
+          }
+        }
+      }
+    }
+    .chat-page{
+      .room-field{
+        flex: none;
+        position: absolute;
+        z-index: 7;
+        width: 100%;
+        height: 100vh;
+      }
+      .sidebar{
+        position: absolute;
+        background-color: #bb86fc;
+        z-index: 9;
+        right: 16px;
+        top: 16px;
+        display: flex;
+        padding: 8px;
+        border-radius: 8px;
+      }
+      .chat-field{
+        flex: none;
+        width: 100%;
+        img{
+          width: 350px;
+        }
 
+      }
+    }
+    .homepage {
+      padding: 16px;
+      img {
+        display: none;
+      }
+      .right{
+        width: 100%;
+        h1{
+          font-size: 60px;
+        }
+        text-align: center;
+        align-items: center;
+      }
+    }
   }
+
 }

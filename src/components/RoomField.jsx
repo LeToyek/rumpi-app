@@ -4,10 +4,10 @@ import { useAppContext } from "../context/AppContext";
 const RoomField = () => {
   const {
     setIsOpenModal,
-    getRoomData,
     isOpenModal,
     rooms,
     getRealTimeRooms,
+    isShowRoom,
     userData,
     setIsLoading
   } = useAppContext();
@@ -18,7 +18,7 @@ const RoomField = () => {
     setIsLoading(false)
   }, []);
   return (
-    <div className="room-field">
+    <div className="room-field" style={{display: window.innerWidth <500 ? isShowRoom?"flex":"none":"flex"}}>
       <UserField Username={userData?.Username} />
       <div className="rooms-wrapper">
         {rooms && rooms.map((r) => <RoomContainer key={r.id} {...r} />)}
@@ -43,12 +43,13 @@ const UserField = ({ Username }) => {
   );
 };
 const RoomContainer = ({ id, name }) => {
-  const { setChatRoomID } = useAppContext();
+  const { setChatRoomID,setIsShowRoom } = useAppContext();
   return (
     <div
       className="room-container"
       onClick={() => {
         setChatRoomID(id);
+        setIsShowRoom(false)
       }}
     >
       <h3>{name}</h3>

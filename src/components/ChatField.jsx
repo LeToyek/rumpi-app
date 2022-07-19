@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { useAppContext } from "../context/AppContext";
-import callImg from "../assets/night-call.png";
+
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import empty from '../assets/empty-mail.png'
+import empty from "../assets/empty-mail.png";
+import StartChatField from "./StartChatField";
 const ChatField = () => {
   const {
     sendMessage,
@@ -16,16 +17,19 @@ const ChatField = () => {
     isShowEditField,
     setIsShowEditField,
     chatID,
-    editMessage,rooms
+    editMessage,
+    rooms,
+    isShowRoom,
   } = useAppContext();
   const [text, setText] = useState("");
   const [editText, setEditText] = useState("");
+  const [width, setWidth] = useState(window.innerWidth);
 
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  const roomData = rooms.filter(e => e.id === chatRoomID)
+  const roomData = rooms && rooms.filter((e) => e.id === chatRoomID);
   useEffect(() => {
     scrollToBottom();
   }, [dataMessages]);
@@ -33,27 +37,33 @@ const ChatField = () => {
     getMessages(chatRoomID);
   }, [chatRoomID]);
   return chatRoomID.trim().length === 0 ? (
-    <div className="chat-field">
-      <img src={callImg} alt="zxzx" />
-      <h2>Rumpi App</h2>
-      <p>Connected with your friend by chatting </p>
-    </div>
+    <StartChatField />
   ) : (
     <div className="chat-field">
       {isShowEditField ? (
         <div className="edit-field">
           <h2>Edit Message</h2>
-          <input type="text" value={editText} onChange={e => setEditText(e.target.value)} autoFocus/>
+          <input
+            type="text"
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            autoFocus
+          />
           <div className="buttons">
-            <button onClick={()=>{
-              editMessage(chatID,editText)
-              setEditText("")
-              setIsShowEditField(false)
-            }}>Edit</button>
-            <button onClick={()=>setIsShowEditField(false)}>Cancel</button>
+            <button
+              onClick={() => {
+                editMessage(chatID, editText);
+                setEditText("");
+                setIsShowEditField(false);
+              }}
+            >
+              Edit
+            </button>
+            <button onClick={() => setIsShowEditField(false)}>Cancel</button>
           </div>
         </div>
       ) : null}
+
       <div className="room-name">
         <h2>🏚️ {roomData[0].name}</h2>
       </div>
@@ -110,6 +120,13 @@ const ChatCard = ({ isUser, text, time, users, id }) => {
 
           <div
             className="chat-card"
+            onClick={
+              window.innerWidth < 500
+                ? () => {
+                    setIsShowOption(!isShowOption);
+                  }
+                : null
+            }
             onMouseEnter={() => setStyle({ display: "block" })}
             onMouseLeave={() => setStyle({ display: "none" })}
           >
@@ -135,6 +152,7 @@ const ChatCard = ({ isUser, text, time, users, id }) => {
 
           <div
             className="chat-card"
+            oncli
             onMouseEnter={() => setStyle({ display: "block" })}
             onMouseLeave={() => setStyle({ display: "none" })}
           >
@@ -173,15 +191,17 @@ const Options = ({ closeMe, chatID }) => {
         className="wrapper"
         onClick={() => {
           setIsShowEditField(true);
-          setChatID(chatID)
-          closeMe()
+          setChatID(chatID);
+          closeMe();
         }}
       >
         <EditIcon />
         <h4>Edit</h4>
       </div>
 
-      <div className="wrapper" onClick={closeMe}>
+      <div className="wrapper" onClick={()=>{
+        closeMe()
+        }}>
         <ClearOutlinedIcon />
         <h4>Cancel</h4>
       </div>

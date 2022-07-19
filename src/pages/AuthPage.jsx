@@ -24,9 +24,9 @@ const LoginPage = () => {
             <DoNotDisturbAltIcon />
           )}
           {err === null ? (
-            <h3>Login Success Success</h3>
+            <h3>Your account has been successfully created</h3>
           ) : (
-            <h3>Wrong Password or Username</h3>
+            <h3>Someone already use that username</h3>
           )}
         </div>
       </Snackbar>}
