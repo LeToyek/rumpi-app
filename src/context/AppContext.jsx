@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { supabaseAPI } from "../../supabaseAPI";
 
 const AppContext = createContext({});
 
@@ -22,10 +23,7 @@ const AppContextProvider = ({ children }) => {
   const [isShowRoom, setIsShowRoom] = useState(true);
   const [chatID, setChatID] = useState("");
   const history = useHistory();
-  const supabase = createClient(
-    "https://utybkjndivaewaatsisa.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWJram5kaXZhZXdhYXRzaXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTc1MTE2NjcsImV4cCI6MTk3MzA4NzY2N30.rx3pZlxCK8p1WQTy-zUiMNsUdKzVHwhltVRhzni38NE"
-  );
+  const supabase = supabaseAPI
   const postUserAccount = async () => {
     const { error } = await supabase
       .from("users")
